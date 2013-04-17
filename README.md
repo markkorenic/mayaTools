@@ -1,4 +1,5 @@
 py_dev
 ======
 
-repo for python rig tools
+repo for rig utilities
+
