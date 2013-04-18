@@ -43,7 +43,7 @@ def listDeformers(self, selection, *args):
         deformers.append(node)
 
 def popInfluenceList(self, *args):
-
+    #list inputs based on base mesh selection
     selection = self.getSelectedMesh()
     deformerList = self.listDeformers(selection)
     if selection == None:
