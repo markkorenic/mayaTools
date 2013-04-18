@@ -57,7 +57,7 @@ def getSelectionSkinClusters(self, selection, *args):
     if skin == False:
         cmds.headsUpMessage('skinCluster Not Found')
     return skin
-
+#comment
 def deformerReorder(self, *args):
     #cmds.reorderDeformers()
     pass
