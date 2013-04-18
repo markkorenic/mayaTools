@@ -17,7 +17,7 @@ class mk_Reorder_Deformers():
     buttonWidth = 110
     buttonHeight = 20
     """ The root layout """
-self.UIElements["rowColumnLayout"] = cmds.rowColumnLayout(numberOfColumns=2, columnWidth=[(1, 120), (2, 240)], cs=[2, 10], bgc=[0.2, 0.2, 0.2])
+    self.UIElements["rowColumnLayout"] = cmds.rowColumnLayout(numberOfColumns=2, columnWidth=[(1, 120), (2, 240)], cs=[2, 10], bgc=[0.2, 0.2, 0.2])
 
 """ Use a flow layout for the  UI """
 self.UIElements["guiFlowLayout"] = cmds.flowLayout(v=True, bgc=[.4, .4, .4], width=120, height=self.windowHeight)
