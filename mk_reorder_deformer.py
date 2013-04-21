@@ -1,9 +1,15 @@
+<<<<<<< HEAD
 import maya.cmds as cmds
 import maya.mel as mel
+=======
+__author: 'mark korenic'
+import maya.cmds as cmds
+>>>>>>> 645cefdd077a7caa2d25a6eaa4dcfaaac88c9e7a
 
 class mk_Reorder_Deformers():
     def __init__(self):
         """ Create a dictionary to store UI elements """
+<<<<<<< HEAD
         self.UIElements = {}
 
 <<<<<<< HEAD
@@ -21,6 +27,10 @@ class mk_Reorder_Deformers():
         self.UIElements["reorderDeformers"] = cmds.window(self.windowName, width=self.windowWidth, height=self.windowHeight,
             title="mk_reorder", sizeable=True, mxb=False, mnb=False)
 =======
+=======
+    self.UIElements = {}
+
+>>>>>>> 645cefdd077a7caa2d25a6eaa4dcfaaac88c9e7a
     """ Check to see if the UI exists """
     self.windowName = "mk_reorderDeformers"
     if cmds.dockControl(self.windowName, exists=True):
@@ -38,6 +48,7 @@ class mk_Reorder_Deformers():
 self.UIElements["guiFlowLayout"] = cmds.flowLayout(v=True, bgc=[.4, .4, .4], width=120, height=self.windowHeight)
 cmds.setParent(self.UIElements["rowColumnLayout"])
 self.UIElements['influenceList'] = cmds.textScrollList( numberOfRows=8, w=210, h=200, bgc=[.4, .4, .4], allowMultiSelection=True, p=self.UIElements['guiFlowLayout'])
+<<<<<<< HEAD
 >>>>>>> 645cefdd077a7caa2d25a6eaa4dcfaaac88c9e7a
 
         
@@ -52,11 +63,18 @@ self.UIElements['influenceList'] = cmds.textScrollList( numberOfRows=8, w=210, h
         annotation='', p=self.UIElements['rowColumnLayout'])
         #show window
         cmds.showWindow(self.windowName)
+=======
+
+>>>>>>> 645cefdd077a7caa2d25a6eaa4dcfaaac88c9e7a
 
 def getSelectedMesh(self, selection, *args):
     # Identify the selection
     selMesh = cmds.ls(sl=True, et='transform')
+<<<<<<< HEAD
     if selMesh == []:
+=======
+    if sel == []:
+>>>>>>> 645cefdd077a7caa2d25a6eaa4dcfaaac88c9e7a
         return
 
 def listDeformers(self, selection, *args):
@@ -67,6 +85,7 @@ def listDeformers(self, selection, *args):
         cmds.error('No history in selection')
     else:
         for node in listHistory:
+<<<<<<< HEAD
             nodeTypes = cmds.nodeType(node, inherited = True)
             deformer.append(node)
 
@@ -86,6 +105,19 @@ def popInfluenceList(self, *args):
         return(cmds.headsUpMessage("Select Geometry"))
    
         cmds.textScrollList(self.UIElements['influenceList'], edit=True, append=deformerList)
+=======
+            nodeTypes = cmds.nodeType(node, inherited = true)
+        deformers.append(node)
+
+def popInfluenceList(self, *args):
+    #list inputs based on base mesh selection
+    selection = self.getSelectedMesh()
+    deformerList = self.listDeformers(selection)
+    if selection == None:
+        return(mc.headsUpMessage("Select Geometry"))
+
+    cmds.textScrollList(self.UIElements['influenceList'], edit=True, append=deformerlist)
+>>>>>>> 645cefdd077a7caa2d25a6eaa4dcfaaac88c9e7a
 def getSelectionSkinClusters(self, selection, *args):
     #identify skinCluster
     mel.eval ('$mesh = "%s";' % (selection[0]))
@@ -95,6 +127,13 @@ def getSelectionSkinClusters(self, selection, *args):
     return skin
 #comment
 def deformerReorder(self, *args):
+<<<<<<< HEAD
     cmds.reorderDeformers()
     
 mk_Reorder_Deformers()
+=======
+    #cmds.reorderDeformers()
+    pass
+
+
+>>>>>>> 645cefdd077a7caa2d25a6eaa4dcfaaac88c9e7a
