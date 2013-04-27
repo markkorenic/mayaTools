@@ -1,6 +1,10 @@
+"""
+author: mark korenic
+file: mk_reorder_deformer.py
+created: April 21,2013
+"""
 import maya.cmds as cmds
-import maya.mel as mel
-#new
+
 class mk_Reorder_Deformers():
     def __init__(self):
        
@@ -30,7 +34,7 @@ class mk_Reorder_Deformers():
         cmds.setParent(self.UIElements["rowColumnLayout"])
         
         #influence list
-        self.UIElements['influenceList'] = cmds.textScrollList( numberOfRows=8, w=210, h=200, bgc=[.4, .4, .4], allowMultiSelection=True, p=self.UIElements['rowColumnLayout'])
+        self.UIElements['influenceList'] = cmds.textScrollList( numberOfRows=8, w=210, h=200, bgc=[.4, .4, .4], allowMultiSelection=True, ra =True, dgc = self.dragItem, dpc = self.dropItem, p=self.UIElements['rowColumnLayout'])
         
         #create buttons
         self.UIElements['reorderBtn'] = cmds.button(label='list inputs', width=380, height=30, enable=True,
@@ -57,17 +61,28 @@ class mk_Reorder_Deformers():
             return
     
     def listDeformers(self, *args):
-        
+        self.getSelectedMesh()
         deformers = []
         listHistory = cmds.listHistory()
         for node in listHistory:
             nodeTypes = cmds.nodeType(node, inherited = True)
             if 'geometryFilter' in nodeTypes:       
                 deformers.append(node)
-            #make sure the inputs load
-        cmds.textScrollList(self.UIElements['influenceList'], edit=True, append=deformers)
+        #make sure the inputs load
+        cmds.textScrollList(self.UIElements['influenceList'], edit=True,removeAll = True, append=deformers)
+    
     def deformerReorder(self, *args):
         cmds.reorderDeformers()
+    
+    def dragItem(self, dragItem, x, y, modifiers, dragType=1, *args):
+        self.listDeformers()
+        
+        return['dragging']
+    
+    def dropItem(self, dragItem, dropItem, x, y, modifiers, *args):
+        
+        self.listDeformers()
+        return['dropped']
     
 mk_Reorder_Deformers()
 
