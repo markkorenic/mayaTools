@@ -5,9 +5,9 @@ created: April 21,2013
 """
 import maya.cmds as cmds
 
-class mk_Reorder_Deformers():
+class mk_ReorderDeformers():
     def __init__(self):
-       
+        self.deformers = []
         #Create a dictionary to store UI elements
         self.UIElements = {}
         
@@ -34,7 +34,7 @@ class mk_Reorder_Deformers():
         cmds.setParent(self.UIElements["rowColumnLayout"])
         
         #influence list
-        self.UIElements['influenceList'] = cmds.textScrollList( numberOfRows=8, w=210, h=200, bgc=[.4, .4, .4], allowMultiSelection=True, append = '', ra =True, dgc = self.dragItem, dpc = self.dropItem, p=self.UIElements['rowColumnLayout'])
+        self.UIElements['scrollList'] = cmds.textScrollList( numberOfRows=8, w=210, h=200, bgc=[.4, .4, .4], allowMultiSelection=True, append = self.deformers, ra =True, dgc = self.dragItem, dpc = self.dropItem, p=self.UIElements['rowColumnLayout'])
         
         #create buttons
         self.UIElements['reorderBtn'] = cmds.button(label='list inputs', width=380, height=30, enable=True,
@@ -62,21 +62,21 @@ class mk_Reorder_Deformers():
     
     def listDeformers(self, *args):
         self.getSelectedMesh()
-        deformers = []
+        self.deformers = []
         listHistory = cmds.listHistory()
         for node in listHistory:
             nodeTypes = cmds.nodeType(node, inherited = True)
             if 'geometryFilter' in nodeTypes:       
-                deformers.append(node)
-        #make sure the inputs load
-        cmds.textScrollList(self.UIElements['influenceList'], edit=True,removeAll = True, append=deformers)
+                self.deformers.append(node)
+        #scroll list needed here to populate list
+        cmds.textScrollList(self.UIElements['scrollList'], edit=True,removeAll = True, append=self.deformers)
     
     def deformerReorder(self, *args):
         cmds.reorderDeformers()
     
     
-    def dropItem(self, dragControl, dropControl, messages, x, y, dragType, *args):
-         self.listDeformers()
+    def dropItem(self, dragControl, dropControl, messages, x, y, dragType = 1, *args):
+         #self.deformers()list object is not callable
          print dragControl
          print dropControl
          print messages
@@ -84,10 +84,10 @@ class mk_Reorder_Deformers():
          print dragType
          
     def dragItem(self, dragControl, x, y, modifiers, *args):
-        self.listDeformers()
+        #self.deformers()
         print dragControl
         print x, ",", y
         print modifiers
         
-mk_Reorder_Deformers()
+mk_ReorderDeformers()
 
