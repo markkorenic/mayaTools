@@ -34,7 +34,7 @@ class mk_Reorder_Deformers():
         cmds.setParent(self.UIElements["rowColumnLayout"])
         
         #influence list
-        self.UIElements['influenceList'] = cmds.textScrollList( numberOfRows=8, w=210, h=200, bgc=[.4, .4, .4], allowMultiSelection=True, ra =True, dgc = self.dragItem, dpc = self.dropItem, p=self.UIElements['rowColumnLayout'])
+        self.UIElements['influenceList'] = cmds.textScrollList( numberOfRows=8, w=210, h=200, bgc=[.4, .4, .4], allowMultiSelection=True, append = '', ra =True, dgc = self.dragItem, dpc = self.dropItem, p=self.UIElements['rowColumnLayout'])
         
         #create buttons
         self.UIElements['reorderBtn'] = cmds.button(label='list inputs', width=380, height=30, enable=True,
@@ -74,15 +74,20 @@ class mk_Reorder_Deformers():
     def deformerReorder(self, *args):
         cmds.reorderDeformers()
     
-    def dragItem(self, dragItem, x, y, modifiers, dragType=1, *args):
-        self.listDeformers()
-        
-        return['dragging']
     
-    def dropItem(self, dragItem, dropItem, x, y, modifiers, *args):
-        
+    def dropItem(self, dragControl, dropControl, messages, x, y, dragType, *args):
+         self.listDeformers()
+         print dragControl
+         print dropControl
+         print messages
+         print x, ",", y
+         print dragType
+         
+    def dragItem(self, dragControl, x, y, modifiers, *args):
         self.listDeformers()
-        return['dropped']
-    
+        print dragControl
+        print x, ",", y
+        print modifiers
+        
 mk_Reorder_Deformers()
 
