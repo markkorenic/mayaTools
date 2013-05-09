@@ -7,10 +7,8 @@ import maya.cmds as cmds
 
 class mk_ReorderDeformers():
     def __init__(self):
-        self.deformers = []
         
-        #Create a dictionary to store UI elements
-        self.UIElements = {}
+        self.deformers = []
         
         #Check to see if the UI exists
         self.windowName = "reorderDeformers"
@@ -24,25 +22,22 @@ class mk_ReorderDeformers():
         self.buttonHeight = 20
         
         #create a window
-        self.UIElements["reorderDeformers"] = cmds.window(self.windowName, width=self.windowWidth, height=self.windowHeight,
+        self.UI = cmds.window(self.windowName, width=self.windowWidth, height=self.windowHeight,
             title="mk_reorder", sizeable=True, mxb=False, mnb=False)
 
         #create root layout
-        self.UIElements["rowColumnLayout"] = cmds.rowColumnLayout(numberOfColumns=2, columnWidth=[(1, 120), (2, 240)], cs=[2, 10], bgc=[0.2, 0.2, 0.2])
+        self.mainLayout = cmds.columnLayout(rs = 5, bgc=[0.2, 0.2, 0.2])
     
-        #flow layout for the  UI
-        self.UIElements["guiFlowLayout"] = cmds.flowLayout(v=True, width=self.windowWidth, height=self.windowHeight)
-        cmds.setParent(self.UIElements["rowColumnLayout"])
-        
         #influence list
-        self.UIElements['scrollList'] = cmds.textScrollList( numberOfRows=8, w=210, h=140, bgc=[.4, .4, .4], allowMultiSelection=True, ra =True,append=self.deformers, dgc = self.dragItem, dpc = self.dropItem, p=self.UIElements['rowColumnLayout'],sc = self.listDeformers)
+        self.scrollDeformerList = cmds.textScrollList( numberOfRows=8, w=self.windowWidth, h=140, bgc=[.4, .4, .4], ra =True,append=self.deformers, dgc = self.dragItem, dpc = self.dropItem, p=self.mainLayout)
         
         #create buttons
-        self.UIElements['reorderBtn'] = cmds.button(label='list inputs', width=380, height=30, enable=True,
-        annotation='',p=self.UIElements['rowColumnLayout'], command = self.popDeformerList)
-        self.UIElements['moveDeformer'] = cmds.button(label='Move', width=50, height=30, enable=True,
-        annotation='',p=self.UIElements['guiFlowLayout'], command = self.moveDeformer)
-        
+        self.inputBtn = cmds.button(label='list inputs', width=380, height=30, enable=True,
+        annotation='',p=self.mainLayout, command = self.popDeformerList)
+        self.moveUpBtn = cmds.button(label='Move Up', width=380, height=30, enable=True,
+        annotation='',p=self.mainLayout, command = self.popDeformerList)
+        self.moveDwnBtn = cmds.button(label='Move Down', width=380, height=30, enable=True,
+        annotation='',p=self.mainLayout, command = self.popDeformerList)
         
         #show window
         cmds.showWindow(self.windowName)
@@ -66,14 +61,14 @@ class mk_ReorderDeformers():
     
     def listDeformers(self, *args):
         self.getSelectedMesh()
-        deformers = []
+        self.deformers = []
         listHistory = cmds.listHistory()
         for node in listHistory:
             nodeTypes = cmds.nodeType(node, inherited = True)
             if 'geometryFilter' in nodeTypes:       
-                deformers.append(node)
+                self.deformers.append(node)
         #scroll list needed here to populate list
-        cmds.textScrollList(self.UIElements['scrollList'], edit=True,removeAll = True, append =deformers)
+        cmds.textScrollList(self.scrollDeformerList, edit=True,removeAll = True, append =self.deformers)
     
     def deformerReorder(self, *args):
         #cmds.reorderDeformers()
