@@ -29,13 +29,13 @@ class mk_ReorderDeformers():
         self.mainLayout = cmds.columnLayout(rs = 5, bgc=[0.2, 0.2, 0.2])
     
         #influence list
-        self.scrollDeformerList = cmds.textScrollList( numberOfRows=8, w=self.windowWidth, h=140, bgc=[.4, .4, .4], ra =True,append=self.deformers, dgc = self.dragItem, dpc = self.dropItem, p=self.mainLayout)
+        self.scrollDeformerList = cmds.textScrollList( numberOfRows=8, w=self.windowWidth, h=140, bgc=[.4, .4, .4], ra =True,append=self.deformers, p=self.mainLayout)
         
         #create buttons
         self.inputBtn = cmds.button(label='list inputs', width=380, height=30, enable=True,
         annotation='',p=self.mainLayout, command = self.popDeformerList)
         self.moveUpBtn = cmds.button(label='Move Up', width=380, height=30, enable=True,
-        annotation='',p=self.mainLayout, command = self.popDeformerList)
+        annotation='',p=self.mainLayout, command = self.moveItem)
         self.moveDwnBtn = cmds.button(label='Move Down', width=380, height=30, enable=True,
         annotation='',p=self.mainLayout, command = self.popDeformerList)
         
@@ -50,14 +50,14 @@ class mk_ReorderDeformers():
          
          # Get the list of verts   
         deformerList = self.listDeformers(selection)
-        print deformerList
+        print self.listDeformers()
         
         
     def getSelectedMesh(self, *args):
         # Identify the selection
         selMesh = cmds.ls(sl=True, et='transform')
         if selMesh == []:
-            return
+            return selMesh[0]
     
     def listDeformers(self, *args):
         self.getSelectedMesh()
@@ -74,21 +74,38 @@ class mk_ReorderDeformers():
         #cmds.reorderDeformers()
         pass
     
-    
-    def dropItem(self, dragControl, dropControl, messages, x, y, dragType):
-         print dragControl
-         print dropControl
-         print messages
-         print x, ",", y
-         print dragType
-         
-         
-    def dragItem(self, dragControl, x, y, modifiers):
+    def moveItem(self, direction = 'up', *args):
+        """moves deformer up in list"""
         
-        print dragControl
-        print x, ",", y
-        print modifiers
-        return ['0']
+        original_list = cmds.textScrollList(self.scrollDeformerList, query=True,ai = True)
+        selected_item = cmds.textScrollList(self.scrollDeformerList, query=True, si= True)
+        
+        indexNum = original_list.index(selected_item[0])
+        print selected_item, indexNum
+        if direction == 'up':
+            previousItem = original_list[indexNum -1]
+            print previousItem
+            cmds.reorderDeformers(previousItem, selected_item, self.getSelectedMesh)
+            print self.deformers
+            cmds.textScrollList(self.scrollDeformerList, edit=True,removeAll = True, append =self.deformers)
+        
+        
+        
+    
+    #def dropItem(self, dragControl, dropControl, messages, x, y, dragType):
+         #print dragControl
+         #print dropControl
+         #print messages
+         #print x, ",", y
+         #print dragType
+         
+         
+    #def dragItem(self, dragControl, x, y, modifiers):
+        
+        #print dragControl
+        #print x, ",", y
+        #print modifiers
+        #return ['0']
         
             
 mk_ReorderDeformers()
