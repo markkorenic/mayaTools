@@ -1,14 +1,9 @@
 '''
 created by: markkorenic        www.skeletech.net
 date: 8/6/2012
-
-
 '''
-
 import maya.cmds as mc
 import maya.mel as mel
-
-
 
 class Skin_Utils():
 
@@ -17,34 +12,34 @@ class Skin_Utils():
         self.UIElements = {}
 
         """ Check to see if the UI exists """
-        self.windowName = "skinUtils"
-        if mc.window(self.windowName, exists=True):
-            mc.deleteUI(self.windowName)
+        
+        if mc.dockControl('dockControl', exists=True):
+            mc.deleteUI('dockControl')
 
         """ Define UI elements width and height """
-        self.windowWidth = 380
-        self.windowHeight = 300
+        self.windowWidth = 360
+        self.windowHeight = 400
         buttonWidth = 110
-        buttonHeight = 20
-
+        buttonHeight = 30
 
         """ Define a window"""
-        self.UIElements["mk_skinUtils"] = mc.window(self.windowName, width=self.windowWidth, height=self.windowHeight,
-            title="mk_skinUtils", sizeable=True, mxb=False, mnb=False, menuBar=True)
-        
+        self.UIElements["mk_skinUtils"] = mc.window('mk_skinUtils', width=self.windowWidth, height=self.windowHeight,\
+                                                         title="mk_skinUtility", sizeable=True, mxb=False, mnb=False, menuBar=True)
+        """create menubarLayout"""
+        #self.UIElements['menuBar'] = mc.menuBarLayout(bgc = [0.3, 0.3, 0.3],p = self.UIElements["mk_skinUtils"])
         """ Make a menu bar """
-        self.UIElements['menu'] = mc.menu( label='File', tearOff=False )
+        self.UIElements['menu'] = mc.menu( label='File', tearOff=False,p =self.UIElements["mk_skinUtils"] )
         mc.menuItem( label='Export Weights', c=self.saveSkin )
         mc.menuItem( label='Import Weights', c=self.loadSkin )
-        
+        #self.UIElements['tabLayout'] = mc.tabLayout(edit = True)
         """ The root layout """
-        self.UIElements["rowColumnLayout"] = mc.rowColumnLayout(numberOfColumns=2, columnWidth=[(1, 120), (2, 240)], cs=[2, 10], bgc=[0.2, 0.2, 0.2])
+        self.UIElements["rowColumnLayout"] = mc.rowColumnLayout(numberOfColumns=2, columnWidth=[(1, 120), (2, 240)], cs=[2, 10])
 
         """ Use a flow layout for the  UI """
-        self.UIElements["guiFlowLayout"] = mc.flowLayout(v=True, bgc=[.4, .4, .4], width=120, height=self.windowHeight)
+        self.UIElements["guiFlowLayout"] = mc.flowLayout(v=True, width=120, height=self.windowHeight)
         mc.setParent(self.UIElements["rowColumnLayout"])
 
-        self.UIElements["guiFlowLayout2"] = mc.flowLayout(v=True, bgc=[.4, .4, .4], width=240, height=self.windowHeight)
+        self.UIElements["guiFlowLayout2"] = mc.flowLayout(v=True, width=240, height=self.windowHeight)
         mc.setParent(self.UIElements["rowColumnLayout"])
 
         self.UIElements['Separator'] = mc.separator(height=20, style='single', p=self.UIElements['guiFlowLayout'])
@@ -58,11 +53,12 @@ class Skin_Utils():
         self.UIElements['DropDownItem1'] = mc.menuItem(label='Selected Joints', c=self.skeletonBind, p=self.UIElements['DropDownMenu1'])
         self.UIElements['DropDownItem1'] = mc.menuItem(label='Closest Point', c=self.bindToSurface, p=self.UIElements['DropDownMenu1'])
         
-        self.UIElements['NormChkBx'] = mc.checkBox(label = 'Normalize Weights',annotation = "Normalizes Weights in post", onc = self.weightNormalize,p=self.UIElements['guiFlowLayout'])
-        self.UIElements['PruneChkBx'] = mc.checkBox(label = 'Prune Weights', annotation = 'Removes unused points in deformer', onc = self.weightPrune,p=self.UIElements['guiFlowLayout'])
+        
+        #self.UIElements['rmvInfChkBx'] = mc.checkBox(label = 'Remove Unused',annotation = "Adds skinCluster to front of input order", onc = self.skin_foc,p=self.UIElements['guiFlowLayout'])
         self.UIElements['BindBtn'] = mc.button(label='Bind', width=buttonWidth, height=buttonHeight, enable=True,
-        annotation='Bind Skin based off selection', bgc=[.5, .5, .5], p=self.UIElements['guiFlowLayout'], c=self.skeletonBind)
-
+        annotation='Bind Skin based off selection',  p=self.UIElements['guiFlowLayout'], c=self.skeletonBind)
+        self.UIElements['NormChkBx'] = mc.checkBox(label = 'Normalize Weights',annotation = "Normalizes Weights in post", onc = self.weightNormalize,p=self.UIElements['guiFlowLayout'])
+        self.UIElements['PruneChkBx'] = mc.checkBox(label = 'Prune Weights', annotation = 'Removes unused points in deformer', onc = self.weightPrune,p=self.UIElements['guiFlowLayout'])        
         """ Edit Bind elements """
         self.UIElements['Separator'] = mc.separator(height=34, style='none', p=self.UIElements['guiFlowLayout'])
         self.UIElements['EditBindText'] = mc.text(label='Edit Bind:' , align='left', p=self.UIElements["guiFlowLayout"])
@@ -73,33 +69,35 @@ class Skin_Utils():
         self.UIElements['DropDownItem2'] = mc.menuItem(label='Detach w/ Hist.', p=self.UIElements['DropDownMenu2'])
         self.UIElements['DropDownItem2'] = mc.menuItem(label='Detach w/o Hist.',  p=self.UIElements['DropDownMenu2'])
         
-        self.UIElements['EditBindBtn'] = mc.button(label='Unbind Skin', width=buttonWidth, height=buttonHeight, enable=True,
-        annotation='Edit Skin based off of selection', bgc=[.5, .5, .5], p=self.UIElements['guiFlowLayout'], c=self.editBind)
+        self.UIElements['EditBindBtn'] = mc.button(label='Edit Skin', aop = True, width=buttonWidth, height=buttonHeight, enable=True,
+        annotation='Edit Skin based off of selection', p=self.UIElements['guiFlowLayout'], c=self.editBind)
 
         self.UIElements['Separator'] = mc.separator(h=20, style='none', p=self.UIElements['guiFlowLayout'])
+        
         self.UIElements['EditJntsBtn'] = mc.button(label='Move Joints Off', width=buttonWidth, height=buttonHeight, enable=True,
-        annotation='Put the skin in edit joint mode', bgc=[.5, .5, .5], p=self.UIElements['guiFlowLayout'], c=self.moveJoints)
+        annotation='Put the skin in edit joint mode', p=self.UIElements['guiFlowLayout'], c=self.toggleJoints)
         self.UIElements['Separator'] = mc.separator(h=20, style='none', p=self.UIElements['guiFlowLayout'])
-        self.UIElements['DeleteSkinBtn'] = mc.button(label='Delete SkinCluster', width=buttonWidth, height=buttonHeight, enable=True,
-        annotation='Deletes all SkinCluster history', bgc=[.5, .5, .5], p=self.UIElements['guiFlowLayout'], c=self.deleteSkin)
+        #self.UIElements['paintBtn'] = mc.symbolButton(image = 'paintSkinWeights.png', p = self.UIElements['guiFlowLayout'], c = self.paintSkinButton)
         """ Now we have an empty flow layout to use for something else like a text scroll list of influences """
         self.UIElements['Separator'] = mc.separator(h=20, style='none', p=self.UIElements['guiFlowLayout2'])
         
         """ A text Scroll List.  Now you can make a method to find all the influences associated with the selected skinCluster """
-        self.UIElements['influenceList'] = mc.textScrollList( numberOfRows=8, w=210, h=200, bgc=[.4, .4, .4], allowMultiSelection=True, p=self.UIElements['guiFlowLayout2'])
+        self.UIElements['influenceList'] = mc.textScrollList( numberOfRows=10, w=230, h=230, allowMultiSelection=True, sc=self.selectJoint, p=self.UIElements['guiFlowLayout2'])
         
         """ We need a way to populate the text scroll list once we have a selection.  Maya handles this in the 
         skinning tools by having a selection callback that runs when one of those windows are open.
         We can do the same, but let's start simple by making a button to load this info.
         """
-        self.UIElements['Separator'] = mc.separator(h=20, style='none', p=self.UIElements['guiFlowLayout2'])
-        self.UIElements['loadInfBtn'] = mc.button(label='Load Influences', width=buttonWidth, height=buttonHeight, enable=True,
-        annotation='Load Influences', bgc=[.5, .5, .5], p=self.UIElements['guiFlowLayout2'], c=self.popInfluenceList)
-        
+        self.UIElements['Separator'] = mc.separator(h=10, style='none', p=self.UIElements['guiFlowLayout2'])
+        self.UIElements['loadInfBtn'] = mc.button(label='Load influences', width=220, height=30, enable=True,
+        annotation='Load Influences', p=self.UIElements['guiFlowLayout2'], c=self.popInfluenceList)
+             
+        self.UIElements['Separator'] = mc.separator(h=10, style='none', p=self.UIElements['guiFlowLayout2'])
         """ Show the window"""
 
-        mc.showWindow(self.windowName)
-        
+        #mc.showWindow(self.UIElements["mk_skinUtils"] )
+        mc.dockControl('dockControl',label = 'SkinUtils',area = 'right', allowedArea = 'right',h =self.windowHeight, w = self.windowWidth,content = self.UIElements["mk_skinUtils"])
+    
     def popInfluenceList(self, *args):
         selection = self.getSelectedMesh()
 
@@ -113,19 +111,30 @@ class Skin_Utils():
             return(mc.headsUpMessage('skinCluster Not Found'))
         
         # Get the list of verts   
-        vertList = self.listVertices(selection)
-        print vertList
-        mc.textScrollList(self.UIElements['influenceList'], edit=True, append=vertList)
-
-
-
-    def listVertices(self, selection, *args):
-        #get vtx influences
-        listVerts = (mc.ls ([selection[0] + '.vtx[*]'], flatten=True))
+        #vertList = self.listVertices(selection)
+        #print vertList
+        jointList = self.listJoints(selection)
+        print jointList
+        mc.textScrollList(self.UIElements['influenceList'], edit=True, removeAll = True, append=jointList)
         
-        return listVerts        
-
-
+    def listJoints(self, selection, *args):
+        selection = self.getSelectedMesh()
+        jointList = mc.skinCluster(selection, q =True, inf = True)
+        
+        return jointList
+        
+    #def listVertices(self, selection, *args):
+        #get vtx influences
+        #listVerts = (mc.ls ([selection[0] + '.vtx[*]'], flatten=True))
+        
+        #return listVerts        
+    
+    def selectJoint(self,*args):
+        jnts = self.listJoints(selection)
+        mc.select(selection, r =True, add =True)
+        
+        print selection
+         
     def saveSkin(self, *args):
         print 'In Save Skin'
         print 'In Save Skin'
@@ -150,7 +159,6 @@ class Skin_Utils():
 
         mc.deformerWeights (fileName, ex=True, deformer=sknCluster[0], p=filePath)
         mc.headsUpMessage("Skin Exported")
-
 
     def loadSkin(self, selection, *args):
         
@@ -189,14 +197,6 @@ class Skin_Utils():
         print shp
         return shp
 
-
-    def getSelectedJoints(self, *args):
-        sel = mc.ls(sl=True, typ='joint')
-        if sel == []:
-            return
-        return sel
-
-
     def getSelectionSkinClusters(self, selection, *args):
         print selection
         # I added this to verify a skin cluster exists
@@ -212,17 +212,14 @@ class Skin_Utils():
             return
         return skin
 
-
     def unBindSkin(self, *args):
         print "In Unbind"
         #unbind skin keep history/keep weight values
         self.getSelectedMesh()
 
-        # Maya has bindSkin and skinCluster.  This is of course redundant.  After switching to skinCluster, this function works fine.
         try:
             mc.skinCluster(edit=True, unbindKeepHistory=True)
         except: pass
-
 
     def detachSkin(self, *args):
         print "In Detach"
@@ -238,7 +235,6 @@ class Skin_Utils():
             mc.skinCluster(edit =True,moveJointsMode = True)
         except: pass
 
-
     def bindToSurface(self, selection, *args):
         #bind each object by closest point on selection
         sel = mc.ls(sl=True)
@@ -248,87 +244,56 @@ class Skin_Utils():
         else:
             mc.bindSkin(bcp=True)
 
-
     def skeletonBind(self, *args):
 
         # Find the mesh and joint selection
 
         selection = self.getSelectedMesh()
 
-
         if selection == None:
 
             return(mc.headsUpMessage("Select Geometry"))
 
-
         selJnts = self.getSelectedJoints()
-
 
         if selJnts == None:
 
             return(mc.headsUpMessage("Select Joints"))
 
-
-        # Check to see if the skin is already bound
-
-        # This is tricky because the joints may have been unbound with keep history on
-
-        # This means the mesh shape is disconnected from the joint set, but the skinCluster still exists
-
-        # This should be OK, but you could try doing some checks.
-
-
         sknCluster = self.getSelectionSkinClusters(selection)
-
 
         if sknCluster != None:
 
             print "Skin Information Exists"
 
-
-
-        # Now we can bind the skin based off the option selected in bind method. 
-
-        # First we need to query the active item in the drop down menu.
+        #bind the skin based off the option selected in bind method. 
+        #First we need to query the active item in the drop down menu.
 
         ddVal = mc.optionMenu(self.UIElements['DropDownMenu1'], q=True, v=True)
 
         print ddVal
 
-        # Once we know which item is active, we can do a few if statements to get our skinCluster settings.
         if ddVal =='Skeleton':
 
-        #Bind to selected joints
-
-            # Going to do a try and except until we develop a better verification method.
+        #Bind to selected joints-->
 
             try:
-
                 mc.skinCluster(tsb=True, sm=0)
 
             except:
-
                 return(mc.headsUpMessage("The Skin Was Already Bound"))
 
         if ddVal == 'Selected Joints':
 
             #Bind to selected joints
 
-            # Going to do a try and except until we develop a better verification method.
-
             try:
-
                 mc.skinCluster(tsb=True, sm=0)
 
             except:
-
                 return(mc.headsUpMessage("The Skin Was Already Bound"))
 
-
-
-        mc.headsUpMessage("Skin Bound")
-
-
+            mc.headsUpMessage("Skin Bound")
 
     def weightNormalize(self,selection, *args):
         sel = mc.ls(sl=True, et='transform')
@@ -338,8 +303,8 @@ class Skin_Utils():
             mc.skinCluster(edit = True, normalizeWeights = 2)
             #Normalize in post = default
             return (mc.headsUpMessage("Weights normalized"))
-
-
+                   
+        
     def weightPrune(self, selection, *args):
         sel = mc.ls(sl=True, et='transform')
 
@@ -355,26 +320,20 @@ class Skin_Utils():
     def editBind(self,selection, *args):
 
         selection = self.unBindSkin()
-        if selection == None:
+        if selection == True:
 
             return(mc.headsUpMessage("skin detached"))
-
-
-
-
+        
         sknCluster = self.getSelectionSkinClusters(selection)
 
         delSkin = self.detachSkin()
 
-        if delSkin == None:
+        if delSkin == True:
             return(mc.headsUpMessage("Skin Detached"))
 
         if sknCluster != False:
 
             print "skin information exists"
-
-
-
 
         #query active item in drop Down
         ddVal2 = mc.optionMenu(self.UIElements['DropDownMenu2'], q=True, v=True)
@@ -391,7 +350,7 @@ class Skin_Utils():
         if ddVal2 == "Detach w/o Hist.":
             #unbinds joints in edit mode, can move joints without effecting skinCluster
             try:
-                mc.skinCluster(edit =True, ubk= True)
+                mc.skinCluster(edit =True, unbind= True)
 
             except:
                 return (mc.headsUpMessage("Skin Detached Without History"))
@@ -400,60 +359,31 @@ class Skin_Utils():
     def toggleJoints(self, *args):
 
     # Verify we have a mesh selected
-
         selection = self.getSelectedMesh()
 
         if selection == None:
-
             return(mc.headsUpMessage("Select Geometry"))
 
             # Verify we have a skin cluster
-
         sknCluster = self.getSelectionSkinClusters(selection)
 
         if sknCluster == None:
-
             return(mc.headsUpMessage('skinCluster Not Found'))
 
-
-            # This would be a good time to check if the mesh is already in edit mode so we can make sure our button is in the correct state.
-
-            # I will need to look into how to do this as the mjm flag is not queryable
-
-
-            # Query the button state
-
-        buttonState = mc.button(self.UIElements['EditJntsBtn'], q=True, label=True)
+        # Query the button state
+        buttonState = mc.button(self.UIElements['EditJntsBtn'], aop = True, q=True, label=True)
 
         # Toggle the button state and run the skinCluster command
-
         if buttonState == 'Move Joints Off':
 
-            mc.button(self.UIElements['EditJntsBtn'], edit=True, label='Move Joints On')
+            mc.button(self.UIElements['EditJntsBtn'], edit=True,  label='Move Joints On')
 
-            mc.skinCluster(edit=True, mjm=True)
+            mc.skinCluster(edit=True, mjm=False)
 
         if buttonState == 'Move Joints On':
 
             mc.button(self.UIElements['EditJntsBtn'], edit=True, label='Move Joints Off')
 
-            mc.skinCluster(edit=True, mjm=False)
+            mc.skinCluster(edit=True, mjm=True)
 
-    def deleteSkin(self, *args):
-        selection = self.getSelectedMesh()
-
-        if selection == None:
-
-            return(mc.headsUpMessage("Select Geometry"))
-        
-        sknCluster = self.getSelectionSkinClusters(selection)
-        if sknCluster == None:
-            return(mc.headsUpMessage('skinCluster Not Found'))
-        
-        delSkin=mc.delete(sknCluster)
-        
-        if delSkin ==True:
-            return(mc.headsUpMessage('skinCluster Deleted'))  
-        
 Skin_Utils()
-
