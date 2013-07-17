@@ -10,7 +10,7 @@ import maya.cmds as cmds
 from functools import partial
 
 class mk_ReorderDeformers():
-
+    '''read Synopsis'''
     def __init__(self):
         
         self.deformers = []
