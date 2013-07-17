@@ -1,5 +1,7 @@
 py_dev
 ======
 
-repo for rig utilities
+repo for maya python rigging tools
+
+
 
