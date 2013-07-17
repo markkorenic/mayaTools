@@ -1,4 +1,4 @@
-py_dev
+MayaTools
 ======
 
 repo for maya python rigging tools
