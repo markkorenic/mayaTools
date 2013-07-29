@@ -1,8 +1,6 @@
 '''
 created by: markkorenic        www.skeletech.net
 date: 8/6/2012
-
-
 '''
 
 import maya.cmds as mc
