@@ -1,10 +1,14 @@
 '''
 created by: markkorenic        www.skeletech.net
 date: 8/6/2012
+
+
 '''
 
 import maya.cmds as mc
 import maya.mel as mel
+
+
 
 class Skin_Utils():
 
@@ -46,8 +50,6 @@ class Skin_Utils():
         self.UIElements['Separator'] = mc.separator(height=20, style='single', p=self.UIElements['guiFlowLayout'])
         self.UIElements['BindOptionsText'] = mc.text(label='Bind Method:', align='left',p=self.UIElements["guiFlowLayout"])
     
-        #create a tab layout
-        #self.UIElements["tabLayout"] = cmds.tabLayout()
         """ Organise all the bind options here.
             Start with a dropdown Menu """
         self.UIElements['DropDownMenu1'] = mc.optionMenu( ni=4, width=buttonWidth, height=buttonHeight, enable=True,
@@ -93,7 +95,6 @@ class Skin_Utils():
         self.UIElements['Separator'] = mc.separator(h=20, style='none', p=self.UIElements['guiFlowLayout2'])
         self.UIElements['loadInfBtn'] = mc.button(label='Load Influences', width=buttonWidth, height=buttonHeight, enable=True,
         annotation='Load Influences', bgc=[.5, .5, .5], p=self.UIElements['guiFlowLayout2'], c=self.popInfluenceList)
-        
         
         """ Show the window"""
 
