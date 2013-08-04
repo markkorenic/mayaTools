@@ -13,7 +13,7 @@ if not path in sys.path:
     sys.path.append(envPath)
     print 'R: directory loaded'
 else:
-	print 'R: directory failed'
+    print 'R: directory failed'
 
 #startup = pm.evaldeferred('import Maya.setup')
 loadCometMenu = mel.eval('evalDeferred("source cometMenu.mel");')
