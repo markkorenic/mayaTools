@@ -1,28 +1,32 @@
-def createLegGuide():
-    """creates locator guides for leg joints"""
-    
-    #create hip locator
-    hipLoc = cmds.spaceLocator( p=(3,15,0), n = 'locator_1' )
-    #check to see if hip was created, then center its pivot with xform command
-    for item in hipLoc:
-        cmds.xform( item, cp = True )
-        print 'hip guide created'
-    if not item:
-        print item + 'failed'
-    
-    #create knee locator
-    kneeLoc = cmds.spaceLocator( p=(3, 7, 2), n = 'locator_2' )
-    for item in kneeLoc:
-        cmds.xform( item, cp = True ) 
-        print 'knee guide created'
-    if not item:
-        print item + 'failed'
-    
-    #create ankle locator
-    ankleLoc= cmds.spaceLocator( p=(3, 1, -1), n = 'locator_3' )
-    for item in ankleLoc:
-        cmds.xform( item, cp = True )
-        print 'ankle guide created'
-    if not item:
-        print item + 'failed'
-createLegGuide()
+import pymel.core as pm
+
+#make  global list of locator names and positions
+locatorInfo = (['locator_1', [2,9,4]], ['locator_2', [2, 6 ,6]], ['locator_3', [2, 3 ,4]])
+
+def createLegGuides():
+
+    """creates locator guides for leg"""
+
+    locators = [] #create empty list
+
+    #create leg guides, set initial positions
+
+    for i in range(len(locatorInfo)):
+
+        print locatorInfo[i] #print list contents
+
+        loc = pm.spaceLocator(n = locatorInfo[i][0]) # create locators, rename
+
+        loc.setPosition(locatorInfo[i][1]) # set positions with locatorInfo positions[1]
+
+        if i != 0: # Use a condition to make sure this is not the root locator_1
+
+            loc.setParent(locatorInfo[i][0], locatorInfo[i-1][0]) #parent locators
+
+        #append locators to list
+
+        locators.append(loc)
+
+    print locators
+
+createLegGuides()
