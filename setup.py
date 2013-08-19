@@ -17,8 +17,11 @@ def createMenu():
 #Then, recreate unique menu
     dojoMenu = pm.menu('DojoTools', label = 'DojoTools', tearOff = True, p = 'MayaWindow')
     pm.menuItem(p = dojoMenu, label = 'RD_UI')
-createMenu()
 
+def createLytItem(*args):
+    import Maya.System.RDojo_UI as RDojo_UI
+    reload(RDojo_UI)
+    RDojo_UI.RDojo_UI()
 
 
 
