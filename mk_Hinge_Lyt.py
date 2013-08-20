@@ -1,32 +1,35 @@
 import pymel.core as pm
 
-#make  global list of locator names and positions
+CLASS_NAME = 'Hinge_Lyt'
+TITLE = 'Hinge_LYT'
+DESCRIPTION = 'Builds a hinge layout'
+
 locatorInfo = (['locator_1', [2,9,4]], ['locator_2', [2, 6 ,6]], ['locator_3', [2, 3 ,4]])
 
-def createLegGuides():
 
-    """creates locator guides for leg"""
+class Hinge_Lyt:
+    def __init__(self):
+        print "In Hinge Lyt"
+        self.Hinge_Lyt()
 
-    locators = [] #create empty list
+    def hinge_lyt():
 
-    #create leg guides, set initial positions
+        """creates locator guides for leg"""
 
-    for i in range(len(locatorInfo)):
+        locators = []
+        #create leg guides, set initial positions
+        for i in range(len(locatorInfo)):
+            print locatorInfo[i]
 
-        print locatorInfo[i] #print list contents
+            loc = pm.spaceLocator(n = locatorInfo[i][0]) 
+            loc.setPosition(locatorInfo[i][1]) 
 
-        loc = pm.spaceLocator(n = locatorInfo[i][0]) # create locators, rename
+            if i != 0: # Use a condition to make sure this is not the root
+                loc.setParent(locatorInfo[i][0], locatorInfo[i-1][0]) #parent locator_3 to locator_1
 
-        loc.setPosition(locatorInfo[i][1]) # set positions with locatorInfo positions[1]
+            #append locators to list
+            locators.append(loc)
 
-        if i != 0: # Use a condition to make sure this is not the root locator_1
+        print locators
 
-            loc.setParent(locatorInfo[i][0], locatorInfo[i-1][0]) #parent locators
-
-        #append locators to list
-
-        locators.append(loc)
-
-    print locators
-
-createLegGuides()
+Hinge_Lyt()
