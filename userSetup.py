@@ -1,30 +1,24 @@
-'''
-File: userSetup.py
-
-@author: markkorenic		www.skeletech.net
-Created on: Sept. 6th, 2012
-'''
-import sys
+import os, sys
 import maya.cmds as cmds
+import pymel.core as pm
 import maya.mel as mel
 
-#print PYTHONPATHS
-for path in sys.path:
+
+for path in enumerate(sys.path):
     print path
-#define a path to append to pythonpath 
 
-toolPath = 'C:\Users\markkorenic\Google Drive\maya_scripts\scripts'
-print toolPath
- 
-#Check to see if the path is already part of the Maya scripts path, if it is not, add it.
+envPath = os.environ['RDOJO']
+
 if not path in sys.path:
-    sys.path.append(toolPath)
-print 'Loaded Maya tools path.'
+    sys.path.append(envPath)
+    print 'R: directory loaded'
+else:
+    print 'R: directory failed'
 
-#load cometMenu
+#startup = pm.evaldeferred('import Maya.setup')
 loadCometMenu = mel.eval('evalDeferred("source cometMenu.mel");')
 
-if loadCometMenu==False:
+if loadCometMenu == False:
     print 'unable to load CometMenu.'
 else:
-    print 'Comet Menu loaded with no probs.'
+    print 'Comet Menu loaded'
