@@ -19,7 +19,7 @@ def __init__(self):
         if pm.window(self.windowName, exists=True):
             pm.deleteUI(self.windowName)
 
-        win = self.UIElements["window"] = pm.window(self.windowName, width=self.windowWidth, height=self.windowHeight, title=title="RDojo_UI", sizeable=True)
+        win = self.UIElements["window"] = pm.window(self.windowName, width=self.windowWidth, height=self.windowHeight, title="RDojo_UI", sizeable=True)
 
         #Use a flow layout for the  UI
         self.UIElements["guiFlowLayout"] = pm.flowLayout(v=True, width=self.windowWidth, height=self.windowHeight, bgc=[0.4, 0.4, 0.4])
