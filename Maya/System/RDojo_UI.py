@@ -21,14 +21,15 @@ def __init__(self):
         if pm.window(self.windowName, exists=True):
             pm.deleteUI(self.windowName)
 
-        win = self.UIElements["window"] = pm.window(self.windowName, width=self.windowWidth, height=self.windowHeight, title="RDojo_UI", sizeable=True)
+        windowObject= self.UIElements["window"] = pm.window(self.windowName, width=self.windowWidth, height=self.windowHeight, title="RDojo_UI", sizeable=True)
         #Use a flow layout for the  UI
         self.UIElements["guiFlowLayout"] = pm.flowLayout(v=True, width=self.windowWidth, height=self.windowHeight, bgc=[0.4, 0.4, 0.4])
 
         self.UIElements["hingeButton"] = pm.button( label='Hinge_Lyt', width=self.windowWidth, c = self.createLegLyt)
         self.UIElements["RigLegButton"] = pm.button( label='Hinge_Lyt', width=self.windowWidth, c = self.rig_leg)
         #Show the window
-        pm.showWindow(self.windowName)
+        windowObject.show()
+        
 def createLegLyt(self, *args):
         """creates joint layout"""
         Leg_Lyt.leg_lyt()
@@ -37,10 +38,8 @@ def createLegLyt(self, *args):
 
 def rig_leg(self, *args):
     """places joints in layout positions"""
-    self.createLegLyt()
-
-    for sel in selection: #this loop works, without pm.ls(sl=True)
-        locPos = pm.xform(sel, q = True,t = True, ws=True)# query positions of locators
-        jnt = pm.joint(position=locPos)# set joints to positions of locators
-
-Rdojo_UI()
+    import mk_rig_leg as leg
+    reload(leg)
+    Rig_Leg.DESCRIPTION()
+    leg.Rig_Leg()
+    pm.button(self.UIElements['rigLegBtn'], en = False)
