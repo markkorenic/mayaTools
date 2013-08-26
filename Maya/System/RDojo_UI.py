@@ -8,27 +8,34 @@ reload(Leg_Lyt)
 
 class Rdojo_UI:
  """UI for creating rig parts"""
-def __init__(self):
-        print "In Rdojo_UI"
 
-        #Create a dictionary to store UI elements
-        self.UIElements = {}
-        self.windowWidth = 110
-        self.windowHeight = 100
+ def __init__(self):
+  print "In Rdojo_UI"
 
-        #Check to see if the UI exists
-        self.windowName = "RDojo_UI"
-        if pm.window(self.windowName, exists=True):
-            pm.deleteUI(self.windowName)
+  #Create a dictionary to store UI elements
+  self.UIElements = {}
+  
+  #Check to see if the UI exists
+  #more pymelly
+  winName = self.windowName = "RDojo_UI"
+  if pm.objExists(winName):
+      winName.deleteUI()
+  
+  self.windowWidth = 110
+  self.windowHeight = 100
+  self.buttonWidth = 70
+  self.buttonHeight = 33
+  
+  #create window
+  windowObject= self.UIElements["window"] = pm.window(winName, width=self.windowWidth, height=self.windowHeight, title="RDojo_UI", sizeable=True)
+  #Use a flow layout for the  UI
+  self.UIElements["guiFlowLayout"] = pm.flowLayout(v=True, width=self.windowWidth, height=self.windowHeight, bgc=[0.4, 0.4, 0.4])
 
-        windowObject= self.UIElements["window"] = pm.window(self.windowName, width=self.windowWidth, height=self.windowHeight, title="RDojo_UI", sizeable=True)
-        #Use a flow layout for the  UI
-        self.UIElements["guiFlowLayout"] = pm.flowLayout(v=True, width=self.windowWidth, height=self.windowHeight, bgc=[0.4, 0.4, 0.4])
-
-        self.UIElements["hingeButton"] = pm.button( label='Hinge_Lyt', width=self.windowWidth, c = self.createLegLyt)
-        self.UIElements["RigLegButton"] = pm.button( label='Hinge_Lyt', width=self.windowWidth, c = self.rig_leg)
-        #Show the window
-        windowObject.show()
+  self.UIElements["hingeButton"] = pm.button( label='Hinge_Lyt', width=self.buttonWidth, h=self.buttonHeight, c = self.createLegLyt)
+  self.UIElements["RigLegButton"] = pm.button( label='RigLeg', width=self.buttonWidth,h=self.buttonHeight,c = self.rig_leg)
+  #Show the window
+  windowObject.show()
+Rdojo_UI()
         
 def createLegLyt(self, *args):
         """creates joint layout"""
@@ -43,3 +50,5 @@ def rig_leg(self, *args):
     Rig_Leg.DESCRIPTION()
     leg.Rig_Leg()
     pm.button(self.UIElements['rigLegBtn'], en = False)
+    
+Rdojo_UI()
