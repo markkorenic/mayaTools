@@ -3,7 +3,8 @@ author: Mark Korenic   www.skeletech.net
 file: rig_leg.py
 """
 import pymel.core as pm
-
+import Maya.System.Rig_Utils as rigUtils
+reload(rigUtils)
 
 CLASS_NAME = "Rig_Leg"
 TITLE = "Leg_Rig"
@@ -14,16 +15,15 @@ class Rig_Leg():
     def __init__(self):
         print 'In Leg Rig'
         self.rig_leg()
-
+        
     def rig_leg(self, *args):
 	"""create leg chain based off locator positions"""
-	
+	jointOri = 'XYZ'
 	locList= pm.selected()
+	BN_joints = []
 	FK_joints = []
 	IK_joints = []
-	
-	selection= pm.ls(sl=True)
-    
+	selection = pm.ls(sl=True)
 	# prints the list
 	print selection
 
@@ -35,17 +35,31 @@ class Rig_Leg():
 		#locPos = pm.xform(i, q=True, t=True, ws=True)
 		#instead of xform, the awesome getTranslation can do the exact same thing
 		locPos= i.getTranslation(selection,q=True, ws=True)
-		locList.append(pm.joint(p=locPos, name="BN_%s_JNT" % (i)))
+		BN_joints.append(pm.joint(p=locPos, name="BN_%s_JNT" % (i), spa =True,oj = jointOri))
 		
 	pm.select(clear=True)	
 	for i in selection:
+		#locPos = pm.xform(i, q=True, t=True, ws=True)
+		#instead of xform, the awesome getTranslation can do the exact same thing
 		locPos= i.getTranslation(selection,q=True, ws=True)
-		FK_joints.append(pm.joint(p=locPos, n="FK_%s_JNT" % (i), rad = .4))
+		FK_joints.append(pm.joint(p=locPos, n="FK_%s_JNT" % (i),spa =True, rad = .4, oj = jointOri))
+		
 	pm.select(clear=True)	
-	
 	for i in selection:
+		#locPos = pm.xform(i, q=True, t=True, ws=True)
+		#instead of xform, the awesome getTranslation can do the exact same thing
 		locPos= i.getTranslation(selection,q=True, ws=True)
-		IK_joints.append(pm.joint(p=locPos, n="IK_%s_JNT" % (i), rad = .6))
-		print IK_joints
-		print FK_joints
-		print locList
+		IK_joints.append(pm.joint(p=locPos, n="IK_%s_JNT" % (i), rad = .6, spa =True, oj = jointOri))
+    
+    
+        print IK_joints
+        print FK_joints
+        print BN_joints
+        print locList
+        #pm.orientConstraint(FK_joints[0][1], BN_joints[0][1])
+	
+        pm.delete(selection)
+	
+	#create IK
+        rigUtils.createIK(IK_joints[0], IK_joints[2])
+    #rigUtils.createCtrls()
