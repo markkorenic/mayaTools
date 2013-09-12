@@ -23,7 +23,7 @@ class Rig_Leg():
 	BN_joints = []
 	FK_joints = []
 	IK_joints = []
-	selection = pm.ls(sl=True)
+	selection = pm.selected()
 	# prints the list
 	print selection
 
@@ -32,26 +32,21 @@ class Rig_Leg():
 
 	#sets joints to positions of locators
 	for i in selection:
-		#locPos = pm.xform(i, q=True, t=True, ws=True)
-		#instead of xform, the awesome getTranslation can do the exact same thing
 		locPos= i.getTranslation(selection,q=True, ws=True)
 		BN_joints.append(pm.joint(p=locPos, name="BN_%s_JNT" % (i), spa =True,oj = jointOri))
+        [i.longName() for i in pm.selected()]
 		
 	pm.select(clear=True)	
 	for i in selection:
-		#locPos = pm.xform(i, q=True, t=True, ws=True)
-		#instead of xform, the awesome getTranslation can do the exact same thing
 		locPos= i.getTranslation(selection,q=True, ws=True)
 		FK_joints.append(pm.joint(p=locPos, n="FK_%s_JNT" % (i),spa =True, rad = .4, oj = jointOri))
-		
+		[i.longName() for i in pm.selected()]
 	pm.select(clear=True)	
 	for i in selection:
-		#locPos = pm.xform(i, q=True, t=True, ws=True)
-		#instead of xform, the awesome getTranslation can do the exact same thing
 		locPos= i.getTranslation(selection,q=True, ws=True)
 		IK_joints.append(pm.joint(p=locPos, n="IK_%s_JNT" % (i), rad = .6, spa =True, oj = jointOri))
     
-    
+        [i.longName() for i in pm.selected()]
         print IK_joints
         print FK_joints
         print BN_joints
