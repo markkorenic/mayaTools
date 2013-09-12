@@ -51,10 +51,13 @@ class Rig_Leg():
         print FK_joints
         print BN_joints
         print locList
-        #pm.orientConstraint(FK_joints[0][1], BN_joints[0][1])
+        #orientconstrain chains
+        #make sure joints are oriented properly before applying constraints
+        pm.orientConstraint(FK_joints[0:1], BN_joints[0:1], mo =True)
+        pm.orientConstraint(IK_joints[0:1], BN_joints[0:1], mo =True)
 	
-        pm.delete(selection)
+        selection.remove()
 	
-	#create IK
+	#create IK aftyer 
         rigUtils.createIK(IK_joints[0], IK_joints[2])
     #rigUtils.createCtrls()
