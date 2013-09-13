@@ -34,7 +34,7 @@ class Rig_Leg():
 	for i in selection:
 		locPos= i.getTranslation(selection,q=True, ws=True)
 		BN_joints.append(pm.joint(p=locPos, name="BN_%s_JNT" % (i), spa =True,oj = jointOri))
-        [i.longName() for i in pm.selected()]
+        	[i.longName() for i in pm.selected()]
 		
 	pm.select(clear=True)	
 	for i in selection:
@@ -56,7 +56,7 @@ class Rig_Leg():
         pm.orientConstraint(FK_joints[0:1], BN_joints[0:1], mo =True)
         pm.orientConstraint(IK_joints[0:1], BN_joints[0:1], mo =True)
 	
-        selection.remove()
+        
 	
 	#create IK aftyer 
         rigUtils.createIK(IK_joints[0], IK_joints[2])
