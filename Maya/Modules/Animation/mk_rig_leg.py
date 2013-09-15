@@ -15,8 +15,8 @@ class Rig_Leg():
     def __init__(self):
         print 'In Leg Rig'
         self.rig_leg()
-        
-        
+
+
     def rig_leg(self, *args):
         """create leg chain based off locator positions"""
         BN_joints = []
@@ -24,7 +24,7 @@ class Rig_Leg():
         IK_joints = []
         jointOri = 'XYZ'
         selection = pm.selected()
-        
+
         print selection
 
     # clear selection makes sure to create more than one joint at creation
@@ -32,29 +32,29 @@ class Rig_Leg():
 
     # sets joints to positions of locators
         for i in selection:
-            
+
             locPos = i.getTranslation(selection, q=True, ws=True)
-            BN_joints.append(pm.joint(p=locPos, name="BN_%s_JNT" % (i), spa=True, oj=jointOri))
-            
-        pm.select(clear=True)    
-        for i in selection:
-            locPos = i.getTranslation(selection, q=True, ws=True)
-            FK_joints.append(pm.joint(p=locPos, n="FK_%s_JNT" % (i), spa=True, rad=.4, oj=jointOri))
-            
-        
+            BN_joints.append(pm.joint(p=locPos, name="BN_%s_JNT" % (i), oj=jointOri))
+
         pm.select(clear=True)
-                    
         for i in selection:
             locPos = i.getTranslation(selection, q=True, ws=True)
-            IK_joints.append(pm.joint(p=locPos, n="IK_%s_JNT" % (i), rad=.6, spa=True, oj=jointOri))
-            
+            FK_joints.append(pm.joint(p=locPos, n="FK_%s_JNT" % (i), rad=.4, oj=jointOri))
+            print FK_joints
+
+	pm.select(clear=True)
+
+        for i in selection:
+            locPos = i.getTranslation(selection, q=True, ws=True)
+            IK_joints.append(pm.joint(p=locPos, n="IK_%s_JNT" % (i), rad=.6, oj=jointOri))
+
             print IK_joints
             print FK_joints
             print BN_joints
-         #delete locators  
-        pm.delete(selection)
-        rigUtils.constrainJoints(FK_Joints[0:1], BN_joints[0:1])
-        #create IK
-        buildIK = rigUtils.createIK(IK_joints[0], IK_joints[2])
-        
-        #legContain = pm.container([BN_joints, IK_joints, FK_joints])
+	pm.delete(selection)
+	#constrain joint chains
+	rigUtils.constrainJoint(FK_joints[0:1], IK_joints[0:1], BN_joints[0:1])
+	#build IK
+	buildIK = rigUtils.createIK(IK_joints[0], IK_joints[2])
+
+        # legContain = pm.container([BN_joints, IK_joints, FK_joints])
