@@ -33,7 +33,7 @@ def rig_organizer():
 		for ch in ["x", "y", "z"]:
 			charGrp.attr("%s%s"%(vec, ch)).lock()
 			globMove.attr("%s%s"%(vec, ch)).lock()
-			geoGrp.	attr("%s%s"%(vec, ch)).lock()
+			geoGrp.attr("%s%s"%(vec, ch)).lock()
 			jntGrp.attr("%s%s"%(vec, ch)).lock()
 			ikGrp.attr("%s%s"%(vec, ch)).lock()
 			hideGrp.attr("%s%s"%(vec, ch)).lock()
