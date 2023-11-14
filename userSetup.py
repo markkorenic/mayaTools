@@ -1,24 +1,32 @@
-import os, sys
-import maya.cmds as cmds
-import pymel.core as pm
+import os,sys
+import maya.cmds as mc
 import maya.mel as mel
+import pymel.core as pm
 
 
-for path in enumerate(sys.path):
-    print path
+print("---------Starting userSetup.py from Documents/maya/scripts-----------")
 
-envPath = os.environ['RDOJO']
+#print all maya PYTHONPATH directories
+#for path in sys.path:
+#print(path)
 
-if not path in sys.path:
-    sys.path.append(envPath)
-    print 'R: directory loaded'
+#define a path to append to Maya's pythonpath
+#toolPath = 'C:/Users/Documents/maya/scripts'
+#print toolPath
+
+#Declaring a new variable to represent the testToolPath
+#path = toolPath
+
+#Check to see if the path is already part of the Maya scripts path, if it is not, add it
+#if not path in sys.path:
+   # sys.path.append(path)
+#print ('maya scripts path was added with no problems')
+
+comet_script = pm.evalDeferred('source "cometMenu.mel"')
+#eval hangs menu after maya UI loads
+if not comet_script:
+    print('unable to load CometMenu')
 else:
-    print 'R: directory failed'
+    print('cometMenu loaded with no problems')
 
-#startup = pm.evaldeferred('import Maya.setup')
-loadCometMenu = mel.eval('evalDeferred("source cometMenu.mel");')
-
-if loadCometMenu == False:
-    print 'unable to load CometMenu.'
-else:
-    print 'Comet Menu loaded'
+print("----------End UserSetup.py initialization--------------")
